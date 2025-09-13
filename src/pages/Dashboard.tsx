@@ -1,12 +1,10 @@
-import { Suspense, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { TreasureMap } from '@/components/3d/TreasureMap';
 import { VaultCard } from '@/components/ui/VaultCard';
 import { QuestCard } from '@/components/ui/QuestCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Map, Users, Scroll, Settings } from 'lucide-react';
+import { Map, Users, Scroll, Settings, Compass, Mountain, Flag } from 'lucide-react';
 
 const Dashboard = () => {
   const [userBalance] = useState(2450);
@@ -64,7 +62,7 @@ const Dashboard = () => {
       </motion.header>
 
       <div className="px-6 py-8 space-y-8">
-        {/* Main 3D Map Section */}
+        {/* Adventure Map Section (CSS-based) */}
         <motion.section
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -77,16 +75,101 @@ const Dashboard = () => {
                 Your Adventure Map
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
-              <div className="h-96 w-full">
-                <Canvas camera={{ position: [0, 5, 5], fov: 60 }}>
-                  <Suspense fallback={null}>
-                    <TreasureMap 
-                      userProgress={userProgress}
-                      isInteractive={true}
+            <CardContent className="p-8">
+              <div className="relative h-96 w-full bg-gradient-to-br from-amber-100 to-amber-200 rounded-xl border-4 border-amber-300 overflow-hidden">
+                {/* Map Background Pattern */}
+                <div className="absolute inset-0 opacity-30">
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: `radial-gradient(circle at 2px 2px, rgba(139, 69, 19, 0.3) 1px, transparent 0)`,
+                    backgroundSize: '20px 20px'
+                  }}></div>
+                </div>
+                
+                {/* Adventure Path */}
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 300">
+                  <path
+                    d="M 50 250 Q 100 200 150 220 T 250 180 T 350 120"
+                    stroke="#8B4513"
+                    strokeWidth="4"
+                    strokeDasharray="8,4"
+                    fill="none"
+                    className="opacity-70"
+                  />
+                </svg>
+                
+                {/* Quest Markers */}
+                <div className="absolute inset-0">
+                  {/* Starting Point */}
+                  <motion.div
+                    className="absolute w-8 h-8 bg-success rounded-full border-4 border-white shadow-lg flex items-center justify-center"
+                    style={{ left: '10%', top: '80%' }}
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <Flag className="w-4 h-4 text-white" />
+                  </motion.div>
+                  
+                  {/* Current Position (User) */}
+                  <motion.div
+                    className="absolute w-12 h-12 bg-primary rounded-full border-4 border-accent shadow-mystical flex items-center justify-center"
+                    style={{ left: `${20 + userProgress * 60}%`, top: '65%' }}
+                    animate={{ 
+                      y: [0, -5, 0],
+                      boxShadow: ['0 4px 20px rgba(255, 215, 0, 0.3)', '0 8px 25px rgba(255, 215, 0, 0.5)', '0 4px 20px rgba(255, 215, 0, 0.3)']
+                    }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <Compass className="w-6 h-6 text-accent animate-spin" style={{ animationDuration: '8s' }} />
+                  </motion.div>
+                  
+                  {/* Mid Quest Marker */}
+                  <motion.div
+                    className={`absolute w-8 h-8 ${userProgress >= 0.5 ? 'bg-success' : 'bg-accent'} rounded-full border-4 border-white shadow-lg flex items-center justify-center`}
+                    style={{ left: '55%', top: '50%' }}
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                  >
+                    <Mountain className="w-4 h-4 text-white" />
+                  </motion.div>
+                  
+                  {/* End Treasure */}
+                  <motion.div
+                    className={`absolute w-10 h-10 ${userProgress >= 0.9 ? 'bg-success' : 'bg-accent'} rounded-full border-4 border-white shadow-treasure flex items-center justify-center`}
+                    style={{ left: '85%', top: '30%' }}
+                    animate={{ 
+                      scale: [1, 1.2, 1],
+                      rotate: [0, 5, -5, 0]
+                    }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                  >
+                    <span className="text-2xl">👑</span>
+                  </motion.div>
+                </div>
+                
+                {/* Floating Elements */}
+                <div className="absolute inset-0">
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-2 h-2 bg-accent rounded-full opacity-60"
+                      style={{
+                        left: `${Math.random() * 100}%`,
+                        top: `${Math.random() * 100}%`
+                      }}
+                      animate={{
+                        y: [0, -20, 0],
+                        opacity: [0.3, 0.8, 0.3],
+                        scale: [0.5, 1, 0.5]
+                      }}
+                      transition={{
+                        duration: 4 + Math.random() * 2,
+                        repeat: Infinity,
+                        delay: Math.random() * 4,
+                        ease: "easeInOut"
+                      }}
                     />
-                  </Suspense>
-                </Canvas>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>

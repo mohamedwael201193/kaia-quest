@@ -1,10 +1,7 @@
-import { Suspense, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { TreasureChest } from '@/components/3d/TreasureChest';
-import { FallbackTreasureChest } from '@/components/3d/FallbackTreasureChest';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Play } from 'lucide-react';
+import { Sparkles, Play, Trophy } from 'lucide-react';
 
 const Home = () => {
   const [chestClicked, setChestClicked] = useState(false);
@@ -67,31 +64,94 @@ const Home = () => {
           </motion.div>
         </motion.div>
 
-        {/* 3D Treasure Chest */}
+        {/* Animated Treasure Chest (CSS-based) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, duration: 0.8 }}
-          className="w-80 h-80 mb-12"
+          className="mb-12 relative"
         >
-          <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-            <ambientLight intensity={0.3} />
-            <directionalLight position={[10, 10, 5]} intensity={1} color="#FFD700" />
-            
-            <Suspense fallback={
-              <FallbackTreasureChest 
-                onClick={handleBeginQuest}
-                isOpen={chestClicked}
-                position={[0, 0, 0]}
+          <motion.div
+            className="relative cursor-pointer group"
+            onClick={handleBeginQuest}
+            animate={{ 
+              y: [0, -10, 0],
+              rotateY: chestClicked ? 360 : 0
+            }}
+            transition={{
+              y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+              rotateY: { duration: 1.5, ease: "easeOut" }
+            }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {/* Treasure Chest */}
+            <div className="relative">
+              {/* Chest Body */}
+              <div className="w-32 h-24 bg-gradient-to-br from-amber-800 to-amber-900 rounded-lg border-4 border-amber-700 shadow-treasure group-hover:shadow-mystical transition-all duration-300">
+                <div className="absolute inset-2 border-2 border-amber-600 rounded opacity-60"></div>
+              </div>
+              
+              {/* Chest Lid */}
+              <motion.div
+                className="absolute -top-3 left-0 w-32 h-6 bg-gradient-to-br from-amber-700 to-amber-800 rounded-t-lg border-4 border-amber-600"
+                animate={{
+                  rotateX: chestClicked ? -45 : 0,
+                  transformOrigin: "bottom"
+                }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                {/* Lock */}
+                <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-4 h-3 bg-accent rounded-sm border border-yellow-600"></div>
+              </motion.div>
+              
+              {/* Glow Effect */}
+              <motion.div
+                className="absolute inset-0 rounded-lg bg-accent opacity-20 blur-lg"
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                  opacity: [0.2, 0.4, 0.2]
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               />
-            }>
-              <TreasureChest 
-                onClick={handleBeginQuest}
-                isOpen={chestClicked}
-                position={[0, 0, 0]}
-              />
-            </Suspense>
-          </Canvas>
+              
+              {/* Sparkles */}
+              <div className="absolute -inset-8">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-2 h-2 bg-accent rounded-full"
+                    style={{
+                      left: `${20 + Math.cos((i / 8) * Math.PI * 2) * 60}px`,
+                      top: `${20 + Math.sin((i / 8) * Math.PI * 2) * 60}px`,
+                    }}
+                    animate={{
+                      scale: [0, 1, 0],
+                      rotate: [0, 180, 360],
+                      opacity: [0, 1, 0]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: i * 0.2,
+                      ease: "easeInOut"
+                    }}
+                  />
+                ))}
+              </div>
+              
+              {/* Treasure Glow when opened */}
+              {chestClicked && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                >
+                  <Trophy className="w-8 h-8 text-accent animate-glow-pulse" />
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
         </motion.div>
 
         {/* Call to Action */}
