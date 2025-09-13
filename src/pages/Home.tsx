@@ -2,6 +2,7 @@ import { Suspense, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion } from 'framer-motion';
 import { TreasureChest } from '@/components/3d/TreasureChest';
+import { FallbackTreasureChest } from '@/components/3d/FallbackTreasureChest';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Play } from 'lucide-react';
 
@@ -74,9 +75,16 @@ const Home = () => {
           className="w-80 h-80 mb-12"
         >
           <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-            <Suspense fallback={null}>
-              <ambientLight intensity={0.3} />
-              <directionalLight position={[10, 10, 5]} intensity={1} color="#FFD700" />
+            <ambientLight intensity={0.3} />
+            <directionalLight position={[10, 10, 5]} intensity={1} color="#FFD700" />
+            
+            <Suspense fallback={
+              <FallbackTreasureChest 
+                onClick={handleBeginQuest}
+                isOpen={chestClicked}
+                position={[0, 0, 0]}
+              />
+            }>
               <TreasureChest 
                 onClick={handleBeginQuest}
                 isOpen={chestClicked}

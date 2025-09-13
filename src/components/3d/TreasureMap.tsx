@@ -12,7 +12,7 @@ interface TreasureMapProps {
 
 export const TreasureMap = ({ userProgress = 0.2, isInteractive = true }: TreasureMapProps) => {
   const mapRef = useRef<THREE.Group>(null);
-  const gltf = useLoader(GLTFLoader, '/src/assets/models/stylized_map.glb');
+  const gltf = useLoader(GLTFLoader, '/models/stylized_map.glb');
 
   // Gentle rotation animation
   useFrame(() => {

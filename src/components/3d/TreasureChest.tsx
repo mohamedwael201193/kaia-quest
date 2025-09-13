@@ -14,7 +14,7 @@ export const TreasureChest = ({ onClick, isOpen = false, position = [0, 0, 0] }:
   const meshRef = useRef<THREE.Group>(null);
   
   // Load the 3D model
-  const gltf = useLoader(GLTFLoader, '/src/assets/models/treasure_chest.glb');
+  const gltf = useLoader(GLTFLoader, '/models/treasure_chest.glb');
   
   // Gentle floating animation
   useFrame((state) => {

@@ -16,7 +16,7 @@ export const AdventurerModel = ({
   progress = 0 
 }: AdventurerModelProps) => {
   const meshRef = useRef<THREE.Group>(null);
-  const gltf = useLoader(GLTFLoader, '/src/assets/models/adventurer.glb');
+  const gltf = useLoader(GLTFLoader, '/models/adventurer.glb');
   
   // Calculate position based on progress (simple path from left to right)
   const pathPosition: [number, number, number] = [
